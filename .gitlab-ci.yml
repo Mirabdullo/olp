@@ -1,0 +1,38 @@
+stages:
+  - test
+  - build
+  - deploy
+
+pg_test:
+  only:
+    - main
+  tags:
+    - 2-blue.shared.runners-manager.gitlab.com/default
+  script:
+    - make check-conn
+  stage: test
+
+build_project:
+  only:
+    - main
+  tags:
+    - 2-blue.shared.runners-manager.gitlab.com/default
+  stage: build
+  script:
+    - make build
+    - docker login -p $DOCKER_PASSWORD -u $DOCKER_USERNAME
+    - make push
+    - make rm
+
+deploy_project:
+  only:
+    - main
+  tags:
+    - 2-blue.shared.runners-manager.gitlab.com/default
+  stage: deploy
+  script:
+    - apk update && apk add openssh
+    - cp $KEY_FILE key.pem
+    - chmod 400 key.pem
+    - ssh -i key.pem &AWS_USER@AWS_IP_ADDRESS && docker compose down && make compose-up
+    - rm key.pem
