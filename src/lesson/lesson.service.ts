@@ -9,49 +9,41 @@ import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { Lesson } from './entities/lesson.entity';
 import { createReadStream } from 'fs-extra';
-import {MinioClientService} from "../minio-client/minio-client.service";
-import {BufferedFile} from "../minio-client/file.model";
 
 @Injectable()
 export class LessonService {
   constructor(
     @InjectModel(Lesson) private lessonRepository: typeof Lesson,
     private readonly fileService: FilesService,
-    private readonly minioClientService: MinioClientService
   ) {}
 
-  async create(createLessonDto: CreateLessonDto,video: BufferedFile){
-    const uploadVideo = await this.minioClientService.upload(video)
-    createLessonDto.video = uploadVideo.url
-    await  this.lessonRepository.create(createLessonDto)
-    return {
-      image_url: uploadVideo.url,
-      message: "Upload successful"
+  async create(createLessonDto: CreateLessonDto, file: any) {
+    try {
+      await this.lessonRepository.create(createLessonDto);
+      return {
+        statusCode: 201,
+        message: 'Created',
+      };
+    } catch (error) {
+      console.log(error);
+      if(!error.status){
+        throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR)
+      }
+      throw new HttpException(error.message, error.status);
     }
   }
-
-  // async create(createLessonDto: CreateLessonDto, file: any) {
-  //   try {
-  //     await this.lessonRepository.create(createLessonDto);
-  //     return {
-  //       statusCode: 201,
-  //       message: 'Created',
-  //     };
-  //   } catch (error) {
-  //     console.log(error);
-  //     if(!error.status){
-  //       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR)
-  //     }
-  //     throw new HttpException(error.message, error.status);
-  //   }
-  // }
 
 
 
   async getVideoStream(filename: string) {
-    const path = `./videos/${filename}`;
-    const stream = createReadStream(path);
-    return stream;
+    try {
+      const path = `./videos/${filename}`;
+      const stream = createReadStream(path);
+      console.log("object");
+      return stream;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
 

@@ -1,8 +1,8 @@
 {
-  "name": "arenta",
+  "name": "olp",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Mirabdulloh",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -39,9 +39,7 @@
     "dotenv": "^16.0.3",
     "fs-extra": "^11.1.1",
     "jsonwebtoken": "^9.0.0",
-    "minio": "^7.1.1",
     "multer": "^1.4.5-lts.1",
-    "nestjs-minio-client": "^2.0.0",
     "npm": "^9.6.0",
     "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13",
