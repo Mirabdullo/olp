@@ -9,6 +9,8 @@ import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { Lesson } from './entities/lesson.entity';
 import { createReadStream } from 'fs-extra';
+import * as fs from 'fs'
+import path from 'path';
 
 @Injectable()
 export class LessonService {
@@ -35,10 +37,12 @@ export class LessonService {
 
 
 
-  async getVideoStream(filename: string) {
+  async getVideoStream(filename: string): Promise<fs.ReadStream> {
     try {
-      const path = `./videos/${filename}`;
-      const stream = createReadStream(path);
+      const filepath = `./videos/${filename}`;
+      console.log(filepath);
+      console.log(path.win32);
+      const stream = createReadStream(filepath);
       console.log("object");
       return stream;
     } catch (error) {

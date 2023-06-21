@@ -3,6 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser'
+import * as express from 'express'
+import { join, resolve } from 'path';
 
 
 async function start() {
@@ -14,6 +16,8 @@ async function start() {
   app.useGlobalPipes(new ValidationPipe())
   app.use(cookieParser())
   app.enableCors()
+  app.use(express.static(join(__dirname + '..', '..', 'videos')))
+ 
 
   const swagger = new DocumentBuilder()
   .addBearerAuth()

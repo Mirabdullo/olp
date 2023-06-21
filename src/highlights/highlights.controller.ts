@@ -45,3 +45,4 @@ export class HighlightsController {
     return this.highlightsService.remove(id);
   }
 }
+

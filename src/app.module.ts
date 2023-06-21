@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { resolve } from 'path';
+import { join, resolve } from 'path';
 import { AdminsModule } from './admins/admins.module';
 import { StudentsModule } from './students/students.module';
 import { ModuleTestModule } from './module_test/module_test.module';
@@ -40,9 +40,9 @@ console.log(__dirname);
       isGlobal: true,
       envFilePath: `.development.env`,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: resolve(__dirname, '..', 'videos'),
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', 'videos'),
+    // }),
 
 
     SequelizeModule.forRootAsync({

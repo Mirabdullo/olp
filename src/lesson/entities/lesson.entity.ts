@@ -36,6 +36,13 @@ export class Lesson extends Model<Lesson> {
   })
   video: string;
 
+  @ApiProperty({ example: 'File', description: 'File nomi' })
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  file: string;
+
   @ApiProperty({ example: 'Description', description: 'Description nomi' })
   @Column({
     type: DataType.TEXT,
