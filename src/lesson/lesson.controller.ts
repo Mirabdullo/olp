@@ -45,6 +45,18 @@ export class LessonController {
   ]))
   async uploadVideo(@Body() createLessonDto: CreateLessonDto, @UploadedFiles() files: { video?: Express.Multer.File[], file?: Express.Multer.File[]}) {
       console.log(files);
+      let upload_video: string = ''
+      let upload_file: string = ''
+  
+          if(files.video){
+            upload_video =  files.video[0].filename        
+          }
+    
+          if(files.file){
+            upload_file = files.file[0].filename
+          }
+          createLessonDto.video = upload_video
+          createLessonDto.file = upload_file
       return this.lessonService.create(createLessonDto, files);
     }
 

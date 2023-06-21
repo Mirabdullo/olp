@@ -19,6 +19,11 @@ export class CreateLessonDto {
   @IsString()
   video: string;
 
+  @ApiProperty({ type: 'string', format: 'binary' , required: false})
+  @IsOptional()
+  @IsString()
+  file: string;
+
   @ApiProperty({ example: 'description', description: 'description nomi' })
   @IsString({ message: 'description must be a string' })
   description: string;
