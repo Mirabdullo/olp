@@ -62,45 +62,17 @@ export class CourseService {
     }
   }
 
-  async update(id: string, updateCourseDto: UpdateCourseDto, files: any) {
+  async update(id: string, updateCourseDto: UpdateCourseDto) {
     try {
       const course = await this.courseRepository.findByPk(id);
       if (!course)
         throw new HttpException("Ma'lumot topilmadi", HttpStatus.NOT_FOUND);
 
-      if (!files) {
-        let upload_image: string = ''
-        let upload_logo: string = ''
-        if(files.image){
-          upload_image = await this.fileService.createFile(files.image[0])         
-        }
-  
-        if(files.logo){
-          upload_logo = await this.fileService.createFile(files.logo[0])
-        }
-
-          await this.courseRepository.update(
-            {
-              ...updateCourseDto,
-              image: upload_image,
-              logo: upload_logo,
-            },
-            {
-              where: { id: id },
-            },
-          );
-
-          return {
-            statusCode: 200,
-            message: "Updated"
-          }
-        
-
-      }
-      await this.courseRepository.update(updateCourseDto, {
-        where: { id: id },
-        returning: true,
-      });
+      await this.courseRepository.update( updateCourseDto,
+        {
+          where: { id: id },
+        },
+      )
 
       return {
         statusCode: 200,

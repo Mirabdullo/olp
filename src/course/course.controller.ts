@@ -39,7 +39,7 @@ export class CourseController {
     { name: 'logo', maxCount: 1 },
   ]))
   @ApiConsumes('multipart/form-data')
-  async create(@Body() createCourseDto: CreateCourseDto, @UploadedFiles()  files: { image?: Express.Multer.File[], logo?: Express.Multer.File[] },) {
+  async create(@Body() createCourseDto: CreateCourseDto, @UploadedFiles()  files: { image?: Express.Multer.File[], logo?: Express.Multer.File[] }) {
     console.log(files);
     let upload_image: string = ''
     let upload_logo: string = ''
@@ -77,14 +77,34 @@ export class CourseController {
   @ApiOperation({ summary: 'Id orqali bitta course malumotlarini ozgartirish' })
   @ApiResponse({ status: 200, type: Course })
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('file'))
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'image', maxCount: 1 },
+    { name: 'logo', maxCount: 1 },
+  ]))
   @ApiConsumes('multipart/form-data')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateCourseDto: UpdateCourseDto,
-    @UploadedFiles() file: any,
+    @UploadedFiles()  files: { image?: Express.Multer.File[], logo?: Express.Multer.File[] },
   ) {
-    return this.courseService.update(id, updateCourseDto, file);
+    console.log(files);
+    const data = await this.courseService.findOne(id);
+    if (!data)
+    throw new HttpException("Ma'lumot topilmadi", HttpStatus.NOT_FOUND);
+
+    let upload_image: string = data.image
+    let upload_logo: string = data.logo
+
+        if(files.image){
+          upload_image = await this.fileService.createFile(files.image[0])         
+        }
+  
+        if(files.logo){
+          upload_logo = await this.fileService.createFile(files.logo[0])
+        }
+        updateCourseDto.image = upload_image
+        updateCourseDto.logo = upload_logo
+    return this.courseService.update(id, updateCourseDto);
   }
 
   @ApiOperation({ summary: 'Id orqali courseni ochirish' })
