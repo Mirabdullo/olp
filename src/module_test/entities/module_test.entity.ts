@@ -10,7 +10,7 @@ import { Course } from '../../course/entities/course.entity';
 import { Modules } from '../../modules/entities/module.entity';
 import { DataTypes } from 'sequelize';
 
-@Table({ tableName: 'module-test', timestamps: false })
+@Table({ tableName: 'module_test', timestamps: false })
 export class ModuleTests extends Model<ModuleTests> {
   @ApiProperty({
     example: '173ef952-79bb-489d-9cfc-62db0d8114b4',
