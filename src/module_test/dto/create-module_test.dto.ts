@@ -27,6 +27,8 @@ export class CreateModuleTestDto {
   @ApiProperty({
     example:"What is it?", description:"Test savoli"
   })
+  @IsNotEmpty()
+  @IsString()
   question:string;
 
   @ApiProperty({ example: '[{title:"some", isCorrect:true}, ..., ...]', description: 'Variantlar' })
