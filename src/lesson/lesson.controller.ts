@@ -25,6 +25,7 @@ import { AdminGuard } from '../guards/admin.guard';
 import { Request, Response } from 'express';
 import path, { join } from 'path';
 import  * as fs from 'fs'
+import { EnrolledCourseGuard } from 'src/guards/user.guard';
 
 
 
@@ -59,53 +60,68 @@ export class LessonController {
       return this.lessonService.create(createLessonDto, files);
     }
 
-  // @UseGuards(AdminGuard)
+  // @UseGuards(EnrolledCourseGuard)
+  // @ApiOperation({ summary: 'Read video' })
+  // @ApiResponse({ status: 201, type: Lesson })
+  // @Get(':filename')
+  // async getVideo(@Param('filename') filename: string, @Res() res: Response, @Req() req: Request) {
+  //   try {
+  //     const videoPath = join(__dirname, '../../videos', filename);
+        
+  //     const stat = fs.statSync(videoPath);
+  //     const fileSize = stat.size;
+  //     const range = req.headers.range;
+  
+  //     if (range) {
+  //       const parts = range.replace(/bytes=/, "").split("-");
+  //       const start = parseInt(parts[0], 10);
+  //       const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+  //       const chunksize = (end - start) + 1;
+  //       const file = fs.createReadStream(videoPath, { start, end });
+  //       const head = {
+  //         'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+  //         'Accept-Ranges': 'bytes',
+  //         'Content-Length': chunksize,
+  //         'Content-Type': 'video/mp4',
+  //       };
+  
+  //       res.writeHead(206, head);
+  //       file.pipe(res);
+  //     } else {
+  //       const head = {
+  //         'Content-Length': fileSize,
+  //         'Content-Type': 'video/mp4',
+  //       };
+  
+  //       res.writeHead(200, head);
+  //       fs.createReadStream(videoPath).pipe(res);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     if(!error.status){
+  //       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR)
+  //     }
+
+  //     throw new HttpException(error.message, error.status)
+  //   }
+  // }
+
+  // @UseGuards(EnrolledCourseGuard)
   @ApiOperation({ summary: 'Read video' })
   @ApiResponse({ status: 201, type: Lesson })
   @Get(':filename')
   async getVideo(@Param('filename') filename: string, @Res() res: Response, @Req() req: Request) {
     try {
-      const videoPath = join(__dirname, '../../videos', filename);
-        
-      const stat = fs.statSync(videoPath);
-      const fileSize = stat.size;
-      const range = req.headers.range;
-  
-      if (range) {
-        const parts = range.replace(/bytes=/, "").split("-");
-        const start = parseInt(parts[0], 10);
-        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
-        const chunksize = (end - start) + 1;
-        const file = fs.createReadStream(videoPath, { start, end });
-        const head = {
-          'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-          'Accept-Ranges': 'bytes',
-          'Content-Length': chunksize,
-          'Content-Type': 'video/mp4',
-        };
-  
-        res.writeHead(206, head);
-        file.pipe(res);
-      } else {
-        const head = {
-          'Content-Length': fileSize,
-          'Content-Type': 'video/mp4',
-        };
-  
-        res.writeHead(200, head);
-        fs.createReadStream(videoPath).pipe(res);
-      }
+      console.log("object");
+      await this.lessonService.streamVideo(filename, res, req);
+      return "ok"
     } catch (error) {
-      console.log(error);
-      if(!error.status){
-        throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR)
-      }
-
-      throw new HttpException(error.message, error.status)
+      console.error(error);
+      const status = error.status || HttpStatus.INTERNAL_SERVER_ERROR;
+      const message = error.message || 'Internal Server Error';
+      res.status(status).send(message);
     }
   }
-
-
 
 
   @ApiOperation({ summary: 'Barcha lessonlar royhati' })

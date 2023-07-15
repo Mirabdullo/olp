@@ -1,4 +1,4 @@
-import { StudentsService } from './../students/students.service';
+// import { StudentsService } from './../students/students.service';
 import {
   CanActivate,
   ExecutionContext,
@@ -9,11 +9,12 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Observable } from 'rxjs';
+import { Student } from 'src/students/entities/student.entity';
 
 @Injectable()
-export class UserGuards implements CanActivate {
+export class EnrolledCourseGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService,
-    private studentService: StudentsService) {}
+   ) {}
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
@@ -27,16 +28,20 @@ export class UserGuards implements CanActivate {
           message: "Foydalanuvchi avtorizatsiyadan o'tmagan",
         });
       }
-      const user = this.jwtService.verify(token, {
-        secret: process.env.ACCESS_TOKEN_KEY,
-      });
-      console.log( this.studentService.findOne(user.id));
-      if (user.role !== 'student') {
-        throw new UnauthorizedException({
-          message: 'Foydalanuvchiga ruxsat etilmagan',
-        });
-      }
 
+     (async function check(){
+
+        const user = await new JwtService().verify(token, {
+          secret: process.env.ACCESS_TOKEN_KEY,
+        });
+        if (user.role !== 'student') {
+          throw new UnauthorizedException({
+            message: 'Foydalanuvchiga ruxsat etilmagan',
+          });
+        }
+        console.log(((await Student.findOne(user.id)).dataValues.id));
+        return true;
+      }())
       return true;
     } catch (error) {
       if(error.message.includes("invalid signature")){

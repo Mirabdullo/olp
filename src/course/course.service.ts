@@ -8,6 +8,8 @@ import { FilesService } from '../uploads/files.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Course } from './entities/course.entity';
+import { Modules } from 'src/modules/entities/module.entity';
+import { Lesson } from 'src/lesson/entities/lesson.entity';
 
 @Injectable()
 export class CourseService {
@@ -38,7 +40,16 @@ export class CourseService {
   async findAll() {
     try {
       return await this.courseRepository.findAll({
-        include:{all: true}
+        include: [
+          {
+            model: Modules,
+            include: [
+              {
+                model: Lesson
+              }
+            ]
+          },
+        ]
       });
     } catch (error) {
       if(!error.status){
@@ -52,7 +63,16 @@ export class CourseService {
   async findOne(id: string) {
     try {
       return await this.courseRepository.findByPk(id, {
-        include:{all: true}
+        include: [
+          {
+            model: Modules,
+            include: [
+              {
+                model: Lesson
+              }
+            ]
+          },
+        ]
       });
     } catch (error) {
       if(!error.status){

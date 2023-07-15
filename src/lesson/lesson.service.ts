@@ -10,7 +10,8 @@ import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { Lesson } from './entities/lesson.entity';
 import { createReadStream } from 'fs-extra';
 import * as fs from 'fs'
-import path from 'path';
+import path, { join } from 'path';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class LessonService {
@@ -37,17 +38,72 @@ export class LessonService {
 
 
 
-  async getVideoStream(filename: string): Promise<fs.ReadStream> {
+  // async getVideoStream(filename: string): Promise<fs.ReadStream> {
+  //   try {
+  //     const filepath = `./videos/${filename}`;
+  //     console.log(filepath);
+  //     console.log(path.win32);
+  //     const stream = createReadStream(filepath);
+  //     console.log("object");
+  //     return stream;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+
+
+  async streamVideo(filename: string, res: Response, req: Request) {
     try {
-      const filepath = `./videos/${filename}`;
-      console.log(filepath);
-      console.log(path.win32);
-      const stream = createReadStream(filepath);
-      console.log("object");
-      return stream;
+      const videoPath = join(__dirname, '../../videos', filename);
+      const statResult = await this.getFileStat(videoPath);
+
+      const fileSize = statResult.size;
+      const range = req.headers['range'];
+
+      if (range) {
+        const parts = range.replace(/bytes=/, '').split('-');
+        const start = parseInt(parts[0], 10);
+        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+        const chunksize = end - start + 1;
+        const file = createReadStream(videoPath, { start, end });
+        const head = {
+          'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+          'Accept-Ranges': 'bytes',
+          'Content-Length': chunksize,
+          'Content-Type': 'video/mp4',
+        };
+
+        res.writeHead(206, head);
+        file.pipe(res);
+      } else {
+        const head = {
+          'Content-Length': fileSize,
+          'Content-Type': 'video/mp4',
+        };
+
+        res.writeHead(200, head);
+        createReadStream(videoPath).pipe(res);
+      }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      if (!error.status) {
+        throw new Error('Internal Server Error');
+      }
+
+      throw error;
     }
+  }
+
+  private getFileStat(path: string): Promise<fs.Stats> {
+    return new Promise((resolve, reject) => {
+      fs.stat(path, (err, stats) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(stats);
+        }
+      });
+    });
   }
 
 

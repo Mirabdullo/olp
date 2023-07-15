@@ -27,9 +27,7 @@ export class StatisticsService {
 
   async findAll() {
     try {
-      return await this.statisticRepository.findAll({
-        attributes: ['id','title', "description"],
-      });
+      return await this.statisticRepository.findAll();
     } catch (error) {
       if(!error.status){
         throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR)
@@ -41,9 +39,7 @@ export class StatisticsService {
   async findOne(id: string) {
     try {
       console.log(typeof id);
-      const data = await this.statisticRepository.findByPk(id, {
-        attributes: ['id','title', "description"],
-      });
+      const data = await this.statisticRepository.findByPk(id);
       if (!data) {
         throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
       }

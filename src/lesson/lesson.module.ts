@@ -9,6 +9,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import { JwtModule } from '@nestjs/jwt';
 import path from 'path';
+import { StudentsService } from 'src/students/students.service';
+import { EnrolledCourseGuard } from 'src/guards/user.guard';
 
 
 @Module({
@@ -62,7 +64,7 @@ import path from 'path';
   // })
   ],
   controllers: [LessonController],
-  providers: [LessonService],
-  exports: [LessonService]
+  providers: [LessonService, EnrolledCourseGuard],
+  exports: [LessonService, EnrolledCourseGuard],
 })
 export class LessonModule {}

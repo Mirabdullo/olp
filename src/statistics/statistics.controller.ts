@@ -21,6 +21,7 @@ export class StatisticsController {
   @ApiResponse({status: 200, type: [Statistic]})
   @Get()
   findAll() {
+    console.log("object");
     return this.statisticsService.findAll();
   }
 
