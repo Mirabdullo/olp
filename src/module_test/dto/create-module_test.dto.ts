@@ -17,12 +17,12 @@ export class CreateModuleTestDto {
   @IsUUID()
   course_id: string;
 
-  @ApiProperty({
-    example: '173ef952-79bb-489d-9cfc-62db0d8114b4',
-    description: 'Qaysi modulega tegishliligi',
-  })
-  @IsUUID()
-  module_id: string;
+  // @ApiProperty({
+  //   example: '173ef952-79bb-489d-9cfc-62db0d8114b4',
+  //   description: 'Qaysi modulega tegishliligi',
+  // })
+  // @IsUUID()
+  // module_id: string;
 
   @ApiProperty({
     example:"What is it?", description:"Test savoli"

@@ -10,6 +10,8 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { Course } from './entities/course.entity';
 import { Modules } from 'src/modules/entities/module.entity';
 import { Lesson } from 'src/lesson/entities/lesson.entity';
+import { ModuleTests } from 'src/module_test/entities/module_test.entity';
+import { Statistic } from 'src/statistics/entities/statistic.entity';
 
 @Injectable()
 export class CourseService {
@@ -49,6 +51,12 @@ export class CourseService {
               }
             ]
           },
+          {
+            model: ModuleTests
+          },
+          {
+            model: Statistic
+          }
         ]
       });
     } catch (error) {
@@ -72,6 +80,12 @@ export class CourseService {
               }
             ]
           },
+          {
+            model: ModuleTests
+          },
+          {
+            model: Statistic
+          }
         ]
       });
     } catch (error) {

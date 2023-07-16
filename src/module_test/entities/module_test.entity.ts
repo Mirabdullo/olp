@@ -31,13 +31,13 @@ export class ModuleTests extends Model<ModuleTests> {
   })
   course_id: string;
 
-  @ApiProperty({ example: '1', description: 'Qaysi modulega tegishliligi' })
-  @ForeignKey(() => Modules)
-  @Column({
-    type: DataType.UUID,
-    allowNull: false,
-  })
-  module_id: string;
+  // @ApiProperty({ example: '1', description: 'Qaysi modulega tegishliligi' })
+  // @ForeignKey(() => Modules)
+  // @Column({
+  //   type: DataType.UUID,
+  //   allowNull: false,
+  // })
+  // module_id: string;
 
   @ApiProperty({
     example: 'Dasturlash nima?',

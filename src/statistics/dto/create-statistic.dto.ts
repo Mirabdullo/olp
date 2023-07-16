@@ -2,6 +2,8 @@ import { IsNotEmpty } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsUUID, IsString } from 'class-validator';
+import { ForeignKey } from 'sequelize-typescript';
+import { Course } from 'src/course/entities/course.entity';
 
 export class CreateStatisticDto {
   @ApiProperty({
@@ -35,4 +37,12 @@ export class CreateStatisticDto {
   @IsNotEmpty()
   @IsString()
   countries: string;
+
+  @ApiProperty({
+    example: 'unikal uuid',
+    description: 'Course ID',
+  })
+  @IsNotEmpty()
+  @IsUUID()
+  course_id: string
 }

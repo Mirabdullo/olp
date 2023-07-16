@@ -12,6 +12,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { Statistic } from '../../statistics/entities/statistic.entity';
+import { ModuleTests } from 'src/module_test/entities/module_test.entity';
 
 @Table({ tableName: 'course', timestamps: true, paranoid: true })
 export class Course extends Model<Course> {
@@ -93,9 +94,12 @@ export class Course extends Model<Course> {
   // @HasMany(() => Highlight)
   // highlights: Highlight[];
 
-  @HasOne(() => Statistic)
+  @HasMany(() => Statistic)
   statistics: Statistic
 
   @HasMany(() => Modules)
   modules: Modules
+
+  @HasMany(() => ModuleTests)
+  tests: ModuleTests
 }
