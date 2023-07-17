@@ -28,7 +28,7 @@ export class AdminsService {
         where: { email: createAdminDto.email },
       });
       if (condidate) {
-        throw new HttpException(
+        return new HttpException(
           'Bunday foydalanuvchi mavjud',
           HttpStatus.BAD_REQUEST,
         );
